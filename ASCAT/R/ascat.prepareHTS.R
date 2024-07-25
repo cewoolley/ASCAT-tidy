@@ -245,7 +245,7 @@ ascat.prepareHTS = function(tumourseqfile, normalseqfile, tumourname, normalname
                             nthreads=1, tumourLogR_file=NA, tumourBAF_file=NA, normalLogR_file=NA, normalBAF_file=NA, minCounts=10, BED_file=NA,
                             probloci_file=NA, chrom_names=c(1:22, "X"), min_base_qual=20, min_map_qual=35, ref.fasta=NA,
                             skip_allele_counting_tumour=FALSE, skip_allele_counting_normal=FALSE, seed=as.integer(Sys.time()), 
-                            intermediate_dir=".") {
+                            counts_dir=".") {
   requireNamespace("foreach")
   requireNamespace("doParallel")
   requireNamespace("parallel")
@@ -261,7 +261,7 @@ ascat.prepareHTS = function(tumourseqfile, normalseqfile, tumourname, normalname
     foreach(CHR=chrom_names) %dopar% {
       CHR=get("CHR")
       ascat.getAlleleCounts(seq.file=tumourseqfile,
-                            output.file=file.path(intermediate_dir, paste0(tumourname, "_alleleFrequencies_chr", CHR, ".txt")),
+                            output.file=file.path(counts_dir, paste0(tumourname, "_alleleFrequencies_chr", CHR, ".txt")),
                             loci.file=paste0(loci.prefix, CHR, ".txt"),
                             min.base.qual=min_base_qual,
                             min.map.qual=min_map_qual,
@@ -274,7 +274,7 @@ ascat.prepareHTS = function(tumourseqfile, normalseqfile, tumourname, normalname
     foreach(CHR=chrom_names) %dopar% {
       CHR=get("CHR")
       ascat.getAlleleCounts(seq.file=normalseqfile,
-                            output.file=file.path(intermediate_dir, paste0(normalname, "_alleleFrequencies_chr", CHR, ".txt")),
+                            output.file=file.path(counts_dir, paste0(normalname, "_alleleFrequencies_chr", CHR, ".txt")),
                             loci.file=paste0(loci.prefix, CHR, ".txt"),
                             min.base.qual=min_base_qual,
                             min.map.qual=min_map_qual,
@@ -284,8 +284,8 @@ ascat.prepareHTS = function(tumourseqfile, normalseqfile, tumourname, normalname
   }
   # Obtain BAF and LogR from the raw allele counts
   ascat.getBAFsAndLogRs(samplename=tumourname,
-                        tumourAlleleCountsFile.prefix=file.path(intermediate_dir, paste0(tumourname, "_alleleFrequencies_chr")),
-                        normalAlleleCountsFile.prefix=file.path(intermediate_dir, paste0(normalname, "_alleleFrequencies_chr")),
+                        tumourAlleleCountsFile.prefix=file.path(counts_dir, paste0(tumourname, "_alleleFrequencies_chr")),
+                        normalAlleleCountsFile.prefix=file.path(counts_dir, paste0(normalname, "_alleleFrequencies_chr")),
                         tumourLogR_file=tumourLogR_file,
                         tumourBAF_file=tumourBAF_file,
                         normalLogR_file=normalLogR_file,
